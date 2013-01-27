@@ -1,0 +1,10 @@
+$maybe Entity _ user <- muser
+    <p>Your are logged in as #{show $ userIdent user}
+    <p>
+        <a href=@{AuthR LogoutR}>Logout
+$nothing
+    <p>
+        <a href=@{AuthR LoginR}>Go to the login page
+<h1>#{entryTitle entry}
+<p>Posted by #{entryAuthor entry}
+<article>#{entryContent entry}

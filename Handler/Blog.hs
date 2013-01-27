@@ -1,12 +1,18 @@
 module Handler.Blog where
 
 import Import
-import Yesod.Auth
 import Data.Time (getCurrentTime)
+
+getCurrentUser = do
+    muser <- maybeAuth
+    case muser of
+         Just (Entity _ user) -> return $ userIdent user
+         Nothing -> return ""
 
 entryForm :: Form Entry
 entryForm = renderDivs $ Entry
     <$> areq textField "Title" Nothing
+    <*> aformM getCurrentUser
     <*> aformM (liftIO getCurrentTime)
     <*> areq textareaField "Content" Nothing
 
