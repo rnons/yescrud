@@ -12,3 +12,5 @@ $maybe Entity _ user <- muser
     $if userIdent user == entryAuthor entry
         <p>
             <a href=@{UpdateR entryId}>Edit
+        <form method=post action=@{DeleteR entryId}>
+            <input type=submit value="Delete">

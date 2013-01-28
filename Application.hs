@@ -21,6 +21,7 @@ import Handler.Home
 import Handler.Create
 import Handler.Read
 import Handler.Update
+import Handler.Delete
 
 
 -- This line actually creates our YesodDispatch instance. It is the second half

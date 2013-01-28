@@ -23,6 +23,7 @@ library
                      Handler.Create
                      Handler.Read
                      Handler.Update
+                     Handler.Delete
                      Handler.Utils
 
     if flag(dev) || flag(library-only)

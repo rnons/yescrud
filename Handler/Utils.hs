@@ -3,6 +3,7 @@ module Handler.Utils where
 import Data.Time (getCurrentTime)
 import Import
 
+getCurrentUser :: GHandler App App Text
 getCurrentUser = do
     muser <- maybeAuth
     case muser of

@@ -8,3 +8,4 @@
 /blog BlogR GET POST
 /blog/#EntryId EntryR GET
 /blog/#EntryId/update UpdateR GET POST
+/blog/#EntryId/delete DeleteR POST
