@@ -1,20 +1,7 @@
-module Handler.Blog where
+module Handler.Create where
 
 import Import
-import Data.Time (getCurrentTime)
-
-getCurrentUser = do
-    muser <- maybeAuth
-    case muser of
-         Just (Entity _ user) -> return $ userIdent user
-         Nothing -> return ""
-
-entryForm :: Form Entry
-entryForm = renderDivs $ Entry
-    <$> areq textField "Title" Nothing
-    <*> aformM getCurrentUser
-    <*> aformM (liftIO getCurrentTime)
-    <*> areq textareaField "Content" Nothing
+import Handler.Utils
 
 getBlogR :: Handler RepHtml
 getBlogR = do

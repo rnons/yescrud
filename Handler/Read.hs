@@ -1,4 +1,4 @@
-module Handler.Entry where
+module Handler.Read where
 
 import Import
 
@@ -8,3 +8,4 @@ getEntryR entryId = do
     muser <- maybeAuth
     defaultLayout $ do
         $(widgetFile "read")
+
