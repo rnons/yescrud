@@ -3,15 +3,15 @@ module Handler.Create where
 import Import
 import Handler.Utils
 
-getBlogR :: Handler RepHtml
-getBlogR = do
+getCreateR :: Handler RepHtml
+getCreateR = do
     muser <- maybeAuth
     (entryWidget, enctype) <- generateFormPost entryForm
     defaultLayout $ do
         $(widgetFile "create")
 
-postBlogR :: Handler RepHtml
-postBlogR = do
+postCreateR :: Handler RepHtml
+postCreateR = do
     muser <- maybeAuth
     ((result, entryWidget), enctype) <- runFormPost entryForm
     case result of

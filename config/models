@@ -9,7 +9,8 @@ Email
     UniqueEmail email
 Entry
     title Text
-    author Text
+    authorId UserId
+    authorIdent Text
     posted UTCTime
     content Textarea
 

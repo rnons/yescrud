@@ -58,13 +58,19 @@ mkYesodData "App" $(parseRoutesFile "config/routes")
 
 type Form x = Html -> MForm App App (FormResult x, Widget)
 
+isLoggedIn = do
+    muser <- maybeAuth
+    case muser of
+         Just _ -> return Authorized
+         Nothing -> return AuthenticationRequired
+
 isAuthor entryId = do
     muser <- maybeAuth
     entry <- runDB $ get404 entryId
     case muser of
          Nothing -> return AuthenticationRequired
          Just (Entity _ user)
-            | userIdent user == entryAuthor entry -> return Authorized
+            | userIdent user == entryAuthorIdent entry -> return Authorized
             | otherwise      -> unauthorizedI MsgNotAuthor
 
 -- Please see the documentation for the Yesod typeclass. There are a number
@@ -72,6 +78,7 @@ isAuthor entryId = do
 instance Yesod App where
     approot = ApprootMaster $ appRoot . settings
 
+    isAuthorized CreateR _ = isLoggedIn
     isAuthorized (UpdateR entryId) _ = isAuthor entryId
     isAuthorized (DeleteR entryId) _ = isAuthor entryId
 

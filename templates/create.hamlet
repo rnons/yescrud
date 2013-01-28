@@ -4,7 +4,7 @@ $maybe Entity _ user <- muser
         <a href=@{AuthR LogoutR}>Logout
     <p>
         NewPost
-        <form method=post action=@{BlogR} enctype=#{enctype}>
+        <form method=post action=@{CreateR} enctype=#{enctype}>
             ^{entryWidget}
             <input type=submit>
 $nothing

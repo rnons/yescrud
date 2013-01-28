@@ -24,6 +24,7 @@ library
                      Handler.Read
                      Handler.Update
                      Handler.Delete
+                     Handler.User
                      Handler.Utils
 
     if flag(dev) || flag(library-only)
