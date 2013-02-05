@@ -1,7 +1,11 @@
 module Handler.Utils where
 
 import Data.Time (getCurrentTime)
-import Import
+import Import hiding (FilePath)
+import Filesystem.Path.CurrentOS 
+
+import Git
+import Git.Libgit2
 
 getCurrentUserId :: GHandler App App UserId
 getCurrentUserId = do
@@ -10,27 +14,43 @@ getCurrentUserId = do
          Just uid -> return uid
          Nothing -> undefined
 
-getCurrentUser :: GHandler App App Text
+-- | Is it possible to get UserId from User, I mean without DB query
+getCurrentUser :: GHandler App App User
 getCurrentUser = do
     muser <- maybeAuth
     case muser of
-         Just (Entity _ user) -> return $ userIdent user
-         Nothing -> return ""
+         Just (Entity _ user) -> return user
+         Nothing -> undefined
+
+-- | The Signature is need in every commit. The User is passed in.
+-- Or should I retrieve User in function body?
+getCurrentUserSig :: User -> LgRepository Signature
+getCurrentUserSig user = do
+    now  <- liftIO getCurrentTime
+    return Signature {
+               signatureName  = userEmail user
+             , signatureEmail = userEmail user
+             , signatureWhen  = now }
 
 entryForm :: Form Entry
 entryForm = renderDivs $ Entry
     <$> areq textField "Title" Nothing
-    -- <*> aformM maybeAuthId
-    <*> aformM getCurrentUserId
     <*> aformM getCurrentUser
+    <*> aformM getCurrentUserId
     <*> aformM (liftIO getCurrentTime)
     <*> areq textareaField "Content" Nothing
 
 updateForm :: Entry -> Form Entry
 updateForm entry = renderDivs $ Entry
     <$> areq textField "Title" (Just $ entryTitle entry)
-    -- <*> aformM maybeAuthId
-    <*> aformM getCurrentUserId
     <*> aformM getCurrentUser
+    <*> aformM getCurrentUserId
     <*> aformM (liftIO getCurrentTime)
     <*> areq textareaField "Content" (Just $ entryContent entry)
+
+entryRepoPath :: EntryId -> FilePath
+entryRepoPath entryId = repoDir </> (fromText $ toPathPiece entryId) <.> "git"
+
+entryFilePath :: EntryId -> Text -> String
+entryFilePath entryId title = encodeString $ entryRepoPath entryId </> 
+                                   fromText title

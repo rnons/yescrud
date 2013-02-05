@@ -17,6 +17,7 @@ import Control.Applicative
 import Settings.Development
 import Data.Default (def)
 import Text.Hamlet
+import qualified Filesystem.Path.CurrentOS as P
 
 -- | Which Persistent backend this site is using.
 type PersistConfig = MongoConf
@@ -43,6 +44,11 @@ staticDir = "static"
 -- To see how this value is used, see urlRenderOverride in Foundation.hs
 staticRoot :: AppConfig DefaultEnv x -> Text
 staticRoot conf = [st|#{appRoot conf}/static|]
+
+-- | The location of git repositories on your system.
+-- Note: The FilePath data type is different from P.FilePath
+repoDir :: P.FilePath
+repoDir = P.decodeString "/srv/www/"
 
 -- | Settings for 'widgetFile', such as which template languages to support and
 -- default Hamlet settings.

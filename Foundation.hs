@@ -58,27 +58,25 @@ mkYesodData "App" $(parseRoutesFile "config/routes")
 
 type Form x = Html -> MForm App App (FormResult x, Widget)
 
-isLoggedIn = do
-    muser <- maybeAuth
-    case muser of
-         Just _ -> return Authorized
-         Nothing -> return AuthenticationRequired
-
 isAuthor entryId = do
     muser <- maybeAuth
     entry <- runDB $ get404 entryId
     case muser of
          Nothing -> return AuthenticationRequired
          Just (Entity _ user)
-            | userIdent user == entryAuthorIdent entry -> return Authorized
-            | otherwise      -> unauthorizedI MsgNotAuthor
+            | (user == entryAuthor entry) -> return Authorized
+            | otherwise -> unauthorizedI MsgNotAuthor
 
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
 instance Yesod App where
     approot = ApprootMaster $ appRoot . settings
 
-    isAuthorized CreateR _ = isLoggedIn
+    isAuthorized CreateR _ = do
+        muser <- maybeAuth
+        case muser of
+             Just _ -> return Authorized
+             Nothing -> return AuthenticationRequired
     isAuthorized (UpdateR entryId) _ = isAuthor entryId
     isAuthorized (DeleteR entryId) _ = isAuthor entryId
 
@@ -160,7 +158,7 @@ instance YesodAuth App where
         case x of
             Just (Entity uid _) -> return $ Just uid
             Nothing -> do
-                fmap Just $ insert $ User (credsIdent creds) Nothing
+                fmap Just $ insert $ User (credsIdent creds) Nothing Nothing
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins _ = [authBrowserId, authGoogleEmail]
