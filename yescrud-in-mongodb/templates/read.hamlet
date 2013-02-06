@@ -1,0 +1,17 @@
+$maybe Entity _ user <- muser
+    <p>Your are logged in as #{show $ userIdent user}
+    <p>
+        <a href=@{AuthR LogoutR}>Logout
+$nothing
+    <p>
+        <a href=@{AuthR LoginR}>Go to the login page
+<h1>#{entryTitle entry}
+<p>Posted by 
+    <a href=@{UserR (entryAuthorId entry)}>#{entryAuthorIdent entry}
+<article>#{entryContent entry}
+$maybe Entity _ user <- muser
+    $if userIdent user == entryAuthorIdent entry
+        <p>
+            <a href=@{UpdateR entryId}>Edit
+        <form method=post action=@{DeleteR entryId}>
+            <input type=submit value="Delete">
