@@ -1,6 +1,5 @@
 module Handler.Create where
 
-import Data.Text.IO
 import Control.Monad.Reader
 import Git
 import Git.Utils
